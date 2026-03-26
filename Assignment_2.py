@@ -53,7 +53,6 @@ def compare_base_strings(s1, s2, threshold = 1, min_length = 10):
             incorrect_matches += 1
     if incorrect_matches > threshold:
         return False
-
     return True
 
 with open(file) as Input_file:
