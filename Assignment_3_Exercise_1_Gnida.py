@@ -13,8 +13,9 @@ from math import floor
 '''
 Code to compare the sorting algorithms was reused as provided by the lecturer.
 Small adjustments were made:
-    Changed Emin and Emax for myqucksort to mimic built in tests
-    Added a legend for the final plot
+    Changed Emin and Emax for myqucksort to mimic tests for built-in quicksort.
+    Changed np.sort kind to quicksort 
+    Added a legend for the final plot.
     
 '''
 def check_my_sort():
@@ -88,7 +89,7 @@ def check_my_sort():
 
 def myquicksort(list):
     """
-    Self programmed quick sort algorithm
+    Custom quick sort algorithm
     :param list: List of numbers
     :return: Sorted list of numbers
     """
@@ -102,14 +103,14 @@ def myquicksort(list):
     pivot = list[pivot_index]
     left = []
     right = []
-    for i in range(len(list)):
+    for index in range(len(list)):
         # Pivot index is ignored as it will be sorted between the two arrays
-        if i == pivot_index:
+        if index == pivot_index:
             continue
-        if list[i] < pivot:
-            left.append(list[i])
+        if list[index] < pivot:
+            left.append(list[index])
         else:
-            right.append(list[i])
+            right.append(list[index])
 
     # Function is called recursively
     return myquicksort(left) + [pivot] +  myquicksort(right)
@@ -117,7 +118,10 @@ def myquicksort(list):
 
 
 example_array = [0.1, 0.2, 15.2, 10.2, 1.0 , 1.4, 9.3, 13.2, 100.2, 151231.01]
+print("Original list:")
+print(example_array)
 example_array = myquicksort(example_array)
+print("Sorted list:")
 print(example_array)
 check_my_sort()
 
