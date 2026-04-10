@@ -4,17 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a4668671-6b97-4153-be19-29a708417601" name="Changes" comment="Assignment_2">
-      <change afterPath="$PROJECT_DIR$/Assignment_3_Exercise_1_Gnida.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assignment_3_Exercise_2_Gnida.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bioinf_sort.py" afterDir="false" />
+    <list default="true" id="a4668671-6b97-4153-be19-29a708417601" name="Changes" comment="Assignment_3 improved Documentation, final version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assignment_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Assignment_2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/thomg/PycharmProjects/Bioinf" value="3AsvEtY5D4naZOyo6qqZDi8Rtki" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedChatMode">
+    <option name="chatModeId" value="Agent" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -47,26 +51,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Assignment_2.executor": "Run",
-    "Python.Assignment_3_Exercise_1_Gnida.executor": "Run",
-    "Python.Assignment_3_Exercise_2_Gnida.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/thomg/PycharmProjects/Bioinf",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Python",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Assignment_2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Assignment_3_Exercise_1_Gnida.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Assignment_3_Exercise_2_Gnida.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/thomg/PycharmProjects/Bioinf&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\thomg\PycharmProjects\Bioinf" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\thomg\PycharmProjects\Bioinf" />
     </key>
   </component>
@@ -92,6 +99,12 @@
       <workItem from="1774344233856" duration="3347000" />
       <workItem from="1774430729080" duration="1641000" />
       <workItem from="1774445805398" duration="6752000" />
+      <workItem from="1774514985661" duration="2150000" />
+      <workItem from="1774517204201" duration="11000" />
+      <workItem from="1774526160302" duration="611000" />
+      <workItem from="1775721336377" duration="1285000" />
+      <workItem from="1775807785810" duration="814000" />
+      <workItem from="1775809627866" duration="2137000" />
     </task>
     <task id="LOCAL-00001" summary="Assignment_2">
       <option name="closed" value="true" />
@@ -101,7 +114,23 @@
       <option name="project" value="LOCAL" />
       <updated>1773588686797</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Assignment_3 Montecarlo Pi and Quicksort">
+      <option name="closed" value="true" />
+      <created>1774515561494</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1774515561494</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Assignment_3 improved Documentation, final version">
+      <option name="closed" value="true" />
+      <created>1774517141917</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1774517141917</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -120,11 +149,21 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Assignment_2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Assignment_2" />
+    <MESSAGE value="Assignment_3 Montecarlo Pi and Quicksort" />
+    <MESSAGE value="Assignment_3 improved Documentation, final version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Assignment_3 improved Documentation, final version" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Bioinf$Assignment_3_Exercise_2_Gnida.coverage" NAME="Assignment_3_Exercise_2_Gnida Coverage Results" MODIFIED="1774453184101" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Bioinf$Assignment_3_Exercise_1_Gnida.coverage" NAME="Assignment_3_Exercise_1_Gnida Coverage Results" MODIFIED="1774347478145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Bioinf$Assignment_3_Exercise_2_Gnida.coverage" NAME="Assignment_3_Exercise_2_Gnida Coverage Results" MODIFIED="1774517116102" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Bioinf$Assignment_3_Exercise_1_Gnida.coverage" NAME="Assignment_3_Exercise_1_Gnida Coverage Results" MODIFIED="1774515869882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Bioinf$Assignment_2.coverage" NAME="Assignment_2 Coverage Results" MODIFIED="1773588624282" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>
