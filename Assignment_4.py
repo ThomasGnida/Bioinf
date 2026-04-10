@@ -19,7 +19,6 @@ Multiple Sequence Alignment (MSA):
 7. Progressive alignment (ClustalW-style)
 8. Iterative refinement (MUSCLE-style)
 9. Profile HMM alignment (Viterbi decoding)
-10. Optional: consistency-based refinement
 
 Tasks
 A. Implementations — Write modular, documented Python implementations with unit tests.
