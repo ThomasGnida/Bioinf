@@ -2,31 +2,6 @@
 Assignment in Sequence Alignment
 
 Title: A comprehensive implementation, evaluation and comparison of sequence alignment methods
-Submission: Single PDF report + code repository (Git).
-
-Learning Objectives
-• Implement classical dynamic programming alignment algorithms (global & local).
-• Implement affine gap penalties and banded/space-efficient variants.
-• Implement heuristic pairwise alignment (BLAST-style).
-• Implement multiple sequence alignment strategies (progressive, iterative refinement,		profile HMM).
-• Benchmark algorithms on datasets with reproducible experiments.
-• Write a structured report with figures, analysis, and recommendations.
-
-Required Methods
-
-Pairwise Alignment (implement in R or Python):
-1. Needleman–Wunsch (global)
-2. Smith–Waterman (local)
-3. Gotoh (affine gap penalties)
-4. Banded/space-efficient alignment (Hirschberg/banded DP)
-Heuristic/Approximate:
-5. BLAST-style seed-and-extend
-6. Greedy/minimizer-based approximate alignment
-Multiple Sequence Alignment (MSA):
-7. Progressive alignment (ClustalW-style)
-8. Iterative refinement (MUSCLE-style)
-9. Profile HMM alignment (Viterbi decoding)
-
 
 Tasks
 A. Implementations — Write modular, documented Python implementations with unit tests.
@@ -41,11 +16,8 @@ import pandas as pd
 
 
 def benchmark_algorithm(sequence_array, algorithm_method):
-    accuracy = 0
     runtime = 0
     memory = 0
-    parameter_sensitivity = 0
-    complexity = 0
 
 
     return accuracy, runtime, memory, parameter_sensitivity, complexity
@@ -64,15 +36,71 @@ def score(a, b, match=1, mismatch=-1):
 
 def needleman_wunsch(seq1, seq2, match=1, mismatch=-1, gap=-2):
     """
-    Global alignment using Needleman-Wunsch algorithm.
+    Global alignment using Needleman-Wunsch algorithm. NW creates a scoring matrix by determining
+    the "best" solution for each next step. Once the matrix is calculated the algorithm reconstructs
+    the aligned sequence with the highest score.
     :param seq1: First sequence
     :param seq2: Second sequence
     :param match: Score for match
-    :param mismatch: Score for mismatch
-    :param gap: Score for gap
+    :param mismatch: Penalty for mismatch
+    :param gap: Penalty for gap
     :return: Aligned seq1, aligned seq2, score
     """
-    return
+    # Initialize the scoring matrix
+    n = len(seq1) + 1
+    m = len(seq2) + 1
+    matrix = np.zeros(n, m)
+
+    # Initialize the first row and column with gaps to account for gaps at the start of alignment
+    for i in range(n):
+        matrix[i][0] = i * gap
+    for j in range(m):
+        matrix[0][j] = j * gap
+
+    # Fill the scoring matrix
+    for i in range(1, n):
+        for j in range(1, m):
+            match_score = matrix[i - 1][j - 1] + score(seq1[i - 1], seq2[j - 1], match, mismatch)
+            delete = matrix[i - 1][j] + gap
+            insert = matrix[i][j - 1] + gap
+            matrix[i][j] = max(match_score, delete, insert)
+
+    #Traverse the created scoring matrix backwards to get optimal alignment (bottom-right to top-left)
+    aligned_seq1 = []
+    aligned_seq2 = []
+    i, j = len(seq1), len(seq2)
+
+    while i > 0 and j > 0:
+        current_score = matrix[i][j]
+        if current_score == matrix[i - 1][j - 1] + score(seq1[i - 1], seq2[j - 1], match, mismatch):
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append(seq2[j - 1])
+            i -= 1
+            j -= 1
+        elif current_score == matrix[i - 1][j] + gap:
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append('-')
+            i -= 1
+        else:
+            aligned_seq1.append('-')
+            aligned_seq2.append(seq2[j - 1])
+            j -= 1
+
+    # Add remaining gaps if necessary
+    while i > 0:
+        aligned_seq1.append(seq1[i - 1])
+        aligned_seq2.append('-')
+        i -= 1
+    while j > 0:
+        aligned_seq1.append('-')
+        aligned_seq2.append(seq2[j - 1])
+        j -= 1
+
+    # Reverse the aligned sequences
+    aligned_seq1 = ''.join(reversed(aligned_seq1))
+    aligned_seq2 = ''.join(reversed(aligned_seq2))
+
+    return aligned_seq1, aligned_seq2, matrix[-1][-1]
 
 def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-2):
     """
@@ -84,33 +112,57 @@ def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-2):
     :param gap: Score for gap
     :return: Aligned seq1, aligned seq2, score
     """
+    n = len(seq1) + 1
+    m = len(seq2) + 1
+    matrix = np.zeros((n, m))
+    max_score = 0
+    max_pos = None
 
-    return
+    # Fill the scoring matrix
+    for i in range(1, n):
+        for j in range(1, m):
+            match_score = matrix[i - 1][j - 1] + score(seq1[i-1], seq2(j-1))
+            delete = matrix[i - 1][j] + gap
+            insert = matrix[i][j - 1] + gap
+            matrix[i][j] = max(0, match_score, delete, insert)
+
+            if matrix[i][j] > max_score:
+                max_score = matrix[i][j]
+                max_pos = (i, j)
+                #If the maximum score is highest in place it marks the optimal local alignment
+
+    # Traceback
+    aligned_seq1 = []
+    aligned_seq2 = []
+    i, j = max_pos
+
+    while matrix[i][j] > 0:
+        if matrix[i][j] == matrix[i - 1][j - 1] + score(seq1[i - 1], seq2[j - 1], match, mismatch):
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append(seq2[j - 1])
+            i -= 1
+            j -= 1
+        elif matrix[i][j] == matrix[i - 1][j] + gap:
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append('-')
+            i -= 1
+        else:
+            aligned_seq1.append('-')
+            aligned_seq2.append(seq2[j - 1])
+            j -= 1
+
+    # Reverse the aligned sequences
+    aligned_seq1 = ''.join(reversed(aligned_seq1))
+    aligned_seq2 = ''.join(reversed(aligned_seq2))
+
+return aligned_seq1, aligned_seq2, max_score
 
 def gotoh(seq1, seq2, match=1, mismatch=-1, gap_open=-5, gap_extend=-1):
-    """
-    Global alignment with affine gap penalties using Gotoh algorithm.
-    :param seq1: First sequence
-    :param seq2: Second sequence
-    :param match: Score for match
-    :param mismatch: Score for mismatch
-    :param gap_open: Penalty for opening a gap
-    :param gap_extend: Penalty for extending a gap
-    :return: Aligned seq1, aligned seq2, score
-    """
-
     return
 def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
-    """
-
-    """
-
     return
 
 def blast_seed_extend(seq1, seq2, k=11, match=1, mismatch=-1, gap=-2):
-    """
-
-    """
     return
 
 def greedy():
