@@ -10,17 +10,8 @@ C. Analysis — Complexity analysis, biological use cases, discussion of strengt
 """
 
 import numpy as np
-import Bio
+import Bio.Align as bio
 import pandas as pd
-
-
-def benchmark_algorithm(sequence_array, algorithm_method):
-    runtime = 0
-    memory = 0
-
-
-    return accuracy, runtime, memory, parameter_sensitivity, complexity
-
 
 def score(a, b, match=1, mismatch=-1):
     """
@@ -419,13 +410,14 @@ def greedy(seq1, seq2, match=1, mismatch=-1, gap=-2):
             aligned_seq1.append(seq1[i])
             aligned_seq2.append(seq2[j])
             score_val += match
+            i += 1
+            j += 1
         else:
             aligned_seq1.append(seq1[i])
             aligned_seq2.append(seq2[j])
             score_val += mismatch
             i += 1
             j += 1
-            # Add remaining characters (if lengths differ)
     while i < len(seq1):
         aligned_seq1.append(seq1[i])
         aligned_seq2.append('-')
