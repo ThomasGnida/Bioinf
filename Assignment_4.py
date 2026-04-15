@@ -400,8 +400,76 @@ def blast_seed_extend(seq1, seq2, k=11, match=1, mismatch=-1, gap=-2):
         return "", "", 0
     return best_align1, best_align2, best_score
 
-def greedy():
-    return
+def greedy(seq1, seq2, match=1, mismatch=-1, gap=-2):
+    """
+    Greedy alignment algorithm. Processes sequences left to right,
+    greedily matching characters when possible.
+    :param seq1: First sequence
+    :param seq2: Second sequence
+    :param match: Score for match
+    :param mismatch: Score for mismatch
+    :param gap: Score for gap
+    :return: Aligned seq1, aligned seq2, score
+    """
+    n = len(seq1)
+    m = len(seq2)
+    aligned_seq1 = []
+    aligned_seq2 = []
+    score_val = 0
+    i = 0
+    j = 0
+    # Greedily process both sequences
+    while i < n and j < m:
+        if seq1[i] == seq2[j]:
+            # Match found, align them
+            aligned_seq1.append(seq1[i])
+            aligned_seq2.append(seq2[j])
+            score_val += match
+            i += 1
+            j += 1
+        else:
+            # Try to find a match ahead
+            # Look for the next match in seq2 that appears in remaining seq1
+            found = False
+            for ii in range(i, min(i + 5, n)):  # Look ahead up to 5 chars
+                for jj in range(j, min(j + 5, m)):  # Look ahead up to 5 chars
+                    if seq1[ii] == seq2[jj]:
+                        # Found a match ahead, add gaps until we reach it
+                        for _ in range(ii - i):
+                            aligned_seq1.append(seq1[i])
+                            aligned_seq2.append('-')
+                            score_val += gap
+                            i += 1
+                        for _ in range(jj - j):
+                            aligned_seq1.append('-')
+                            aligned_seq2.append(seq2[j])
+                            score_val += gap
+                            j += 1
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                # No match found ahead, add mismatch and move on
+                aligned_seq1.append(seq1[i])
+                aligned_seq2.append(seq2[j])
+                score_val += mismatch
+                i += 1
+                j += 1
+    # Add remaining characters as gaps
+    while i < n:
+        aligned_seq1.append(seq1[i])
+        aligned_seq2.append('-')
+        score_val += gap
+        i += 1
+    while j < m:
+        aligned_seq1.append('-')
+        aligned_seq2.append(seq2[j])
+        score_val += gap
+        j += 1
+    aligned_seq1_str = ''.join(aligned_seq1)
+    aligned_seq2_str = ''.join(aligned_seq2)
+    return aligned_seq1_str, aligned_seq2_str, score_val
 
 def progressive_alignment():
     return
