@@ -471,11 +471,151 @@ def greedy(seq1, seq2, match=1, mismatch=-1, gap=-2):
     aligned_seq2_str = ''.join(aligned_seq2)
     return aligned_seq1_str, aligned_seq2_str, score_val
 
-def progressive_alignment():
-    return
+def progressive_alignment(sequences, match=1, mismatch=-1, gap=-2):
+    """
+    Progressive alignment for multiple sequences using a guide tree approach.
+    Builds pairwise alignments and combines them based on sequence similarity.
+    :param sequences: List of sequences to align
+    :param match: Score for match
+    :param mismatch: Penalty for mismatch
+    :param gap: Penalty for gap
+    :return: List of aligned sequences, total alignment score
+    """
+    if not sequences:
+        return [], 0
+    if len(sequences) == 1:
+        return sequences, 0
+    
+    # Build pairwise distance matrix to find most similar sequences
+    n_seqs = len(sequences)
+    distances = {}
+    
+    for i in range(n_seqs):
+        for j in range(i + 1, n_seqs):
+            # Use Needleman-Wunsch to get alignment score, convert to distance
+            _, _, align_score = needleman_wunsch(sequences[i], sequences[j], match, mismatch, gap)
+            distances[(i, j)] = -align_score
+            distances[(j, i)] = -align_score
+    
+    # Build guide tree by repeatedly combining most similar sequences
+    active_seqs = list(range(n_seqs))
+    aligned_dict = {i: sequences[i] for i in range(n_seqs)}
+    next_idx = n_seqs
+    
+    while len(active_seqs) > 1:
+        # Find closest pair
+        min_dist = np.inf
+        merge_i, merge_j = 0, 1
+        for ii in range(len(active_seqs)):
+            for jj in range(ii + 1, len(active_seqs)):
+                idx_i = active_seqs[ii]
+                idx_j = active_seqs[jj]
+                dist = distances.get((idx_i, idx_j), distances.get((idx_j, idx_i), np.inf))
+                if dist < min_dist:
+                    min_dist = dist
+                    merge_i = ii
+                    merge_j = jj
+        
+        # Align the two closest sequences/profiles
+        idx_i = active_seqs[merge_i]
+        idx_j = active_seqs[merge_j]
+        seq_i = aligned_dict[idx_i]
+        seq_j = aligned_dict[idx_j]
+        
+        align_i, align_j, _ = needleman_wunsch(seq_i, seq_j, match, mismatch, gap)
+        
+        # Store the merged alignment under a new index
+        aligned_dict[next_idx] = align_i
+        aligned_dict[idx_i] = align_i
+        aligned_dict[idx_j] = align_j
+        
+        # Update distances for remaining sequences
+        for k in active_seqs:
+            if k != idx_i and k != idx_j:
+                dist_i_k = distances.get((idx_i, k), distances.get((k, idx_i), 0))
+                dist_j_k = distances.get((idx_j, k), distances.get((k, idx_j), 0))
+                new_dist = (dist_i_k + dist_j_k) / 2.0
+                distances[(next_idx, k)] = new_dist
+                distances[(k, next_idx)] = new_dist
+        
+        # Remove merged sequences and add new node
+        active_seqs.remove(idx_i)
+        active_seqs.remove(idx_j)
+        active_seqs.append(next_idx)
+        next_idx += 1
+    
+    # Reconstruct final alignment from original indices
+    result_aligned = [aligned_dict[idx] for idx in range(n_seqs)]
+    final_score = sum(needleman_wunsch(result_aligned[i], result_aligned[j], 
+                                       match, mismatch, gap)[2] 
+                      for i in range(len(result_aligned))
+                      for j in range(i + 1, len(result_aligned)))
+    
+    return result_aligned, final_score
 
-def iterative_refinement():
-    return
+def iterative_refinement(sequences, match=1, mismatch=-1, gap=-2, max_iterations=10):
+    """
+    Iterative refinement of multiple sequence alignment.
+    Removes one sequence at a time and realigns it, keeping improvement if score increases.
+    :param sequences: List of sequences to align
+    :param match: Score for match
+    :param mismatch: Penalty for mismatch
+    :param gap: Penalty for gap
+    :param max_iterations: Maximum number of refinement iterations
+    :return: List of refined aligned sequences, final alignment score
+    """
+    if len(sequences) <= 1:
+        return sequences, 0
+    
+    # Start with progressive alignment
+    current_align, current_score = progressive_alignment(sequences, match, mismatch, gap)
+    
+    for iteration in range(max_iterations):
+        improved = False
+        
+        # Try removing and realigning each sequence
+        for idx in range(len(current_align)):
+            # Create alignment without this sequence
+            other_seqs = [current_align[i] for i in range(len(current_align)) if i != idx]
+            removed_seq = current_align[idx]
+            
+            # Align the removed sequence to the alignment of others
+            # Simple approach: align to first other sequence
+            if other_seqs:
+                align_removed, align_other, new_pair_score = needleman_wunsch(
+                    removed_seq, other_seqs[0], match, mismatch, gap
+                )
+                
+                # Recalculate total score
+                new_align = other_seqs[:]
+                new_align[0] = align_other
+                new_align.insert(idx, align_removed)
+                
+                # Calculate score of new alignment
+                new_score = 0
+                for i in range(len(new_align)):
+                    for j in range(i + 1, len(new_align)):
+                        # Count matches in aligned columns
+                        col_score = 0
+                        min_len = min(len(new_align[i]), len(new_align[j]))
+                        for col in range(min_len):
+                            if new_align[i][col] != '-' and new_align[j][col] != '-':
+                                col_score += score(new_align[i][col], new_align[j][col], match, mismatch)
+                            elif new_align[i][col] == '-' or new_align[j][col] == '-':
+                                col_score += gap
+                        new_score += col_score
+                
+                # Accept if improved
+                if new_score > current_score:
+                    current_align = new_align
+                    current_score = new_score
+                    improved = True
+        
+        # If no improvement found, stop
+        if not improved:
+            break
+    
+    return current_align, current_score
 
 def profile_hmm_alignment():
     return
