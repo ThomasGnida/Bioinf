@@ -287,7 +287,8 @@ def gotoh(seq1, seq2, match=1, mismatch=-1, gap_open=-5, gap_extend=-1):
 
 def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
     """
-    Banded dynamic programming for global alignment, restricting to band around diagonal.
+    Banded dynamic programming for global alignment,
+    restricting to band around diagonal.
     :param seq1: First sequence
     :param seq2: Second sequence
     :param k: Band width
@@ -356,7 +357,48 @@ def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
     return aligned_seq1, aligned_seq2, matrix[n-1, m-1]
 
 def blast_seed_extend(seq1, seq2, k=11, match=1, mismatch=-1, gap=-2):
-    return
+    """
+    BLAST seed and extend algorithm for local alignment.
+    Finds seeds of length k, then extends ungapped.
+    :param seq1: First sequence
+    :param seq2: Second sequence
+    :param k: Seed length
+    :param match: Score for match
+    :param mismatch: Score for mismatch
+    :param gap: Score for gap (not used in this simple version)
+    :return: Aligned seq1, aligned seq2, score
+    """
+    n = len(seq1)
+    m = len(seq2)
+    best_score = 0
+    best_align1 = ""
+    best_align2 = ""
+    # Find seeds
+    for i in range(n - k + 1):
+        for j in range(m - k + 1):
+            if seq1[i:i+k] == seq2[j:j+k]:
+                # Extend left
+                left_i = i
+                left_j = j
+                while left_i > 0 and left_j > 0 and seq1[left_i-1] == seq2[left_j-1]:
+                    left_i -= 1
+                    left_j -= 1
+                # Extend right
+                right_i = i + k
+                right_j = j + k
+                while right_i < n and right_j < m and seq1[right_i] == seq2[right_j]:
+                    right_i += 1
+                    right_j += 1
+                # Calculate score
+                align_len = right_i - left_i
+                score = align_len * match
+                if score > best_score:
+                    best_score = score
+                    best_align1 = seq1[left_i:right_i]
+                    best_align2 = seq2[left_j:right_j]
+    if best_score == 0:
+        return "", "", 0
+    return best_align1, best_align2, best_score
 
 def greedy():
     return
