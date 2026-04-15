@@ -49,7 +49,7 @@ def needleman_wunsch(seq1, seq2, match=1, mismatch=-1, gap=-2):
     # Initialize the scoring matrix
     n = len(seq1) + 1
     m = len(seq2) + 1
-    matrix = np.zeros(n, m)
+    matrix = np.zeros((n, m))
 
     # Initialize the first row and column with gap penalties
     # This accounts for gaps at the beginning of the sequences
@@ -104,8 +104,10 @@ def needleman_wunsch(seq1, seq2, match=1, mismatch=-1, gap=-2):
         j -= 1
 
     # Since we built the sequences backwards, reverse them
-    aligned_seq1 = aligned_seq1.reverse()
-    aligned_seq2 = aligned_seq2.reverse()
+    aligned_seq1.reverse()
+    aligned_seq2.reverse()
+    aligned_seq1 = ''.join(aligned_seq1)
+    aligned_seq2 = ''.join(aligned_seq2)
 
     return aligned_seq1, aligned_seq2, matrix[n-1, m-1]
 
@@ -142,6 +144,10 @@ def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-2):
                 max_pos = (i, j)
                 # This marks the starting point of the optimal local alignment
 
+    # If no positive score, return empty
+    if max_score == 0:
+        return "", "", 0
+
     # Traceback
     aligned_seq1 = []
     aligned_seq2 = []
@@ -168,8 +174,10 @@ def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-2):
             j -= 1
 
     # Reverse the sequences
-    aligned_seq1 = aligned_seq1.reverse()
-    aligned_seq2 = aligned_seq2.reverse()
+    aligned_seq1.reverse()
+    aligned_seq2.reverse()
+    aligned_seq1 = ''.join(aligned_seq1)
+    aligned_seq2 = ''.join(aligned_seq2)
 
     return aligned_seq1, aligned_seq2, max_score
 
@@ -223,7 +231,7 @@ def gotoh(seq1, seq2, match=1, mismatch=-1, gap_open=-5, gap_extend=-1):
     j = m - 1
 
     # Determine which matrix to start from
-    stat = 0
+    state = 0
     if final_score == M[i, j]:
         state = 0
     elif final_score == Ix[i, j]:
@@ -231,53 +239,118 @@ def gotoh(seq1, seq2, match=1, mismatch=-1, gap_open=-5, gap_extend=-1):
     else:
         state = 2
     while i > 0 or j > 0:
-        match state:
-            case 0:
-                # Determine the source before moving
-                s = score(seq1[i - 1], seq2[j - 1], match, mismatch)
-                if M[i, j] == M[i - 1, j - 1] + s:
-                    source = 'M'
-                elif M[i, j] == Ix[i - 1, j - 1] + s:
-                    source = 'Ix'
-                else:
-                    source = 'Iy'
-                # Append characters
-                aligned_seq1.append(seq1[i - 1])
-                aligned_seq2.append(seq2[j - 1])
-                i -= 1
-                j -= 1
-                current = source
-            case 1:
-                # Determine source for Ix
-                if Ix[i, j] == M[i - 1, j] + gap_open:
-                    source = 'M'
-                else:
-                    source = 'Ix'
-                # Append
-                aligned_seq1.append(seq1[i - 1])
-                aligned_seq2.append('-')
-                i -= 1
-                current = source
-            case 2:
-                # Determine source for Iy
-                if Iy[i, j] == M[i, j - 1] + gap_open:
-                    source = 'M'
-                else:
-                    source = 'Iy'
-                # Append
-                aligned_seq1.append('-')
-                aligned_seq2.append(seq2[j - 1])
-                j -= 1
-                current = source
+        if state == 0:  # M
+            # Determine the source before moving
+            s = score(seq1[i - 1], seq2[j - 1], match, mismatch)
+            if M[i, j] == M[i - 1, j - 1] + s:
+                next_state = 0
+            elif M[i, j] == Ix[i - 1, j - 1] + s:
+                next_state = 1
+            else:
+                next_state = 2
+            # Append characters
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append(seq2[j - 1])
+            i -= 1
+            j -= 1
+            state = next_state
+        elif state == 1:  # Ix
+            # Determine source for Ix
+            if Ix[i, j] == M[i - 1, j] + gap_open:
+                next_state = 0
+            else:
+                next_state = 1
+            # Append
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append('-')
+            i -= 1
+            state = next_state
+        else:  # Iy
+            # Determine source for Iy
+            if Iy[i, j] == M[i, j - 1] + gap_open:
+                next_state = 0
+            else:
+                next_state = 2
+            # Append
+            aligned_seq1.append('-')
+            aligned_seq2.append(seq2[j - 1])
+            j -= 1
+            state = next_state
 
     # Reverse the sequences
-    aligned_seq1 = aligned_seq1.reverse()
-    aligned_seq2 = aligned_seq2.reverse()
+    aligned_seq1.reverse()
+    aligned_seq2.reverse()
+    aligned_seq1 = ''.join(aligned_seq1)
+    aligned_seq2 = ''.join(aligned_seq2)
 
     return aligned_seq1, aligned_seq2, final_score
 
 def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
-    return
+    """
+    Banded dynamic programming for global alignment, restricting to band around diagonal.
+    :param seq1: First sequence
+    :param seq2: Second sequence
+    :param k: Band width
+    :param match: Score for match
+    :param mismatch: Penalty for mismatch
+    :param gap: Penalty for gap
+    :return: Aligned seq1, aligned seq2, score
+    """
+    n = len(seq1) + 1
+    m = len(seq2) + 1
+    matrix = np.full((n, m), -np.inf)
+    # Initialize the band
+    for i in range(n):
+        for j in range(m):
+            if abs(i - j) <= k:
+                if i == 0 and j == 0:
+                    matrix[i, j] = 0
+                elif i == 0:
+                    matrix[i, j] = j * gap
+                elif j == 0:
+                    matrix[i, j] = i * gap
+    # Fill the matrix within the band
+    for i in range(1, n):
+        for j in range(max(1, i - k), min(m, i + k + 1)):
+            match_score = matrix[i - 1, j - 1] + score(seq1[i - 1], seq2[j - 1], match, mismatch)
+            delete = matrix[i - 1, j] + gap
+            insert = matrix[i, j - 1] + gap
+            matrix[i, j] = max(match_score, delete, insert)
+    # Traceback
+    aligned_seq1 = []
+    aligned_seq2 = []
+    i = n - 1
+    j = m - 1
+    while i > 0 or j > 0:
+        if i == 0:
+            aligned_seq1.append('-')
+            aligned_seq2.append(seq2[j - 1])
+            j -= 1
+        elif j == 0:
+            aligned_seq1.append(seq1[i - 1])
+            aligned_seq2.append('-')
+            i -= 1
+        else:
+            score_current = matrix[i, j]
+            score_diag = matrix[i - 1, j - 1] + score(seq1[i - 1], seq2[j - 1], match, mismatch)
+            if score_current == score_diag:
+                aligned_seq1.append(seq1[i - 1])
+                aligned_seq2.append(seq2[j - 1])
+                i -= 1
+                j -= 1
+            elif score_current == matrix[i - 1, j] + gap:
+                aligned_seq1.append(seq1[i - 1])
+                aligned_seq2.append('-')
+                i -= 1
+            else:
+                aligned_seq1.append('-')
+                aligned_seq2.append(seq2[j - 1])
+                j -= 1
+    aligned_seq1.reverse()
+    aligned_seq2.reverse()
+    aligned_seq1 = ''.join(aligned_seq1)
+    aligned_seq2 = ''.join(aligned_seq2)
+    return aligned_seq1, aligned_seq2, matrix[n-1, m-1]
 
 def blast_seed_extend(seq1, seq2, k=11, match=1, mismatch=-1, gap=-2):
     return
