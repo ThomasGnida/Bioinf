@@ -300,6 +300,7 @@ def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
     m = len(seq2) + 1
     matrix = np.full((n, m), -np.inf)
     # Initialize the band
+
     for i in range(n):
         for j in range(m):
             if abs(i - j) <= k:
@@ -309,6 +310,7 @@ def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
                     matrix[i, j] = j * gap
                 elif j == 0:
                     matrix[i, j] = i * gap
+
     # Fill the matrix within the band
     for i in range(1, n):
         for j in range(max(1, i - k), min(m, i + k + 1)):
@@ -330,6 +332,7 @@ def banded_dp(seq1, seq2, k, match=1, mismatch=-1, gap=-2):
             aligned_seq1.append(seq1[i - 1])
             aligned_seq2.append('-')
             i -= 1
+
         else:
             score_current = matrix[i, j]
             score_diag = matrix[i - 1, j - 1] + score(seq1[i - 1], seq2[j - 1], match, mismatch)
