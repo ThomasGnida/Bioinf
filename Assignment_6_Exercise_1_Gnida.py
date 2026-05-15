@@ -44,7 +44,7 @@ def RK4integrator(y0, t0 , N, f, dt):
     :return: t, Y = time grid and numerical solution
     """
 
-    y0 = np.array(y0, dtype=float)
+    y0 = np.array(y0)
 
     t = np.zeros(N + 1)
     y = np.zeros((N + 1, len(y0)))
