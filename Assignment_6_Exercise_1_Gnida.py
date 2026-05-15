@@ -67,7 +67,7 @@ def test_integration():
     '''
     Uses the predefined parameters to compare rk4 and rk45 from scipy.
     No return but prints the results for t_end and plots both methods in a
-    matplotlip figure.
+    matplotlib figure.
     '''
 
     t_start = 0
@@ -120,7 +120,6 @@ def test_integration():
     print("\nFinal RK45 solution:")
     print("y(10) =", rk45_solution.y[0, -1])
     print("y'(10)=", rk45_solution.y[1, -1])
-
     return
 
 test_integration()
